@@ -9,8 +9,8 @@ plugins {
 
 val libGroup = "com.iflytek.ebg.xkt.lib.solbeanpermission"
 val libDescription = "标准课堂学生学习项目，权限授予SDK"
-val libArtifactId = "solbeanpermission"
-val libVersion = "1.0.2-SNAPSHOT"
+val libArtifactId = "SolBeanPermission"
+val libVersion = "1.0.3-SNAPSHOT"
 
 val developerId = "xyhuang23"
 val developerName = "黄星宇"
@@ -62,10 +62,10 @@ afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("Publish") {
-                group = libGroup
-                version = libVersion
-                description = libDescription
-                artifactId = libArtifactId
+                group = readLocalProperties("lib.group")
+                version = readLocalProperties("lib.version")
+                description = readLocalProperties("lib.description")
+                artifactId = readLocalProperties("lib.artifactId")
 
                 from(components["release"])
 
@@ -80,9 +80,9 @@ afterEvaluate {
                     }
                     developers {
                         developer {
-                            id = developerId
-                            name = developerName
-                            email = developerEmail
+                            id = readLocalProperties("developer.id")
+                            name = readLocalProperties("developer.name")
+                            email = readLocalProperties("developer.email")
                         }
                     }
                 }
@@ -92,8 +92,8 @@ afterEvaluate {
         repositories {
             maven {
                 name = "remote"
-                val releasesRepoUrl = uri("https://depend.iflytek.com/artifactory/ebg-mvn-release-private/")
-                val snapshotsRepoUrl = uri("https://depend.iflytek.com/artifactory/ebg-mvn-snapshot-private/")
+                val releasesRepoUrl = uri(readLocalProperties("repo.remote"))
+                val snapshotsRepoUrl = uri(readLocalProperties("repo.snapshots"))
                 url = uri(if (libVersion.endsWith("SNAPSHOT", true)) snapshotsRepoUrl else releasesRepoUrl)
 
                 credentials {

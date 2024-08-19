@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.annotation.Keep
 import androidx.fragment.app.FragmentActivity
+import top.yumik.libs.solbeanpermission.model.PermissionConfig
 import top.yumik.libs.solbeanpermission.model.SolBeanConfig
 import top.yumik.libs.solbeanpermission.permission.PermissionDetailCompat
 import top.yumik.libs.solbeanpermission.ui.PermissionFragment
@@ -51,7 +52,13 @@ object SolBeanPermission {
         context: Context,
         permission: String
     ): Boolean {
-        return PermissionUtils.getPermissionCompat(permission).isGranted(context)
+        val compat = PermissionUtils.getPermissionCompat(permission)
+        val config = compat.config(context)
+        return if (config == PermissionConfig.None) {
+            compat.isGranted(context)
+        } else {
+            config.permissions.all { checkPermission(context, it) }
+        }
     }
 
     @JvmStatic
