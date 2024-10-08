@@ -93,7 +93,7 @@ internal class ManageExternalStorageCompat : ISpecialPermissionCompat {
 
     override fun config(context: Context): PermissionConfig {
         // 如果应用的 TargetSDK 小于或等于 Android 10 则降级
-        if (AndroidVersion.getTargetSdkVersionCode(context) <= AndroidVersion.ANDROID_10) {
+        if (!AndroidVersion.isAndroid11OrAbove()) {
             return PermissionConfig.Replace(
                 permissions = setOf(
                     Permission.READ_EXTERNAL_STORAGE,
