@@ -7,15 +7,6 @@ plugins {
     `maven-publish`
 }
 
-val libGroup = "com.iflytek.ebg.xkt.lib.solbeanpermission"
-val libDescription = "标准课堂学生学习项目，权限授予SDK"
-val libArtifactId = "SolBeanPermission"
-val libVersion = "1.0.4-SNAPSHOT"
-
-val developerId = "xyhuang23"
-val developerName = "黄星宇"
-val developerEmail = "xyhuang23@iflytek.com"
-
 android {
     namespace = "top.yumik.libs.solbeanpermission"
     compileSdk = 34
@@ -70,8 +61,8 @@ afterEvaluate {
                 from(components["release"])
 
                 pom {
-                    name = libArtifactId
-                    description = libDescription
+                    name = readLocalProperties("lib.artifactId")
+                    description = readLocalProperties("lib.description")
                     licenses {
                         license {
                             name = "GPL-2.0"
@@ -94,7 +85,10 @@ afterEvaluate {
                 name = "remote"
                 val releasesRepoUrl = uri(readLocalProperties("repo.remote"))
                 val snapshotsRepoUrl = uri(readLocalProperties("repo.snapshots"))
-                url = uri(if (libVersion.endsWith("SNAPSHOT", true)) snapshotsRepoUrl else releasesRepoUrl)
+                url = uri(
+                    if (readLocalProperties("lib.version").endsWith("SNAPSHOT", true)) snapshotsRepoUrl
+                    else releasesRepoUrl
+                )
 
                 credentials {
                     username = readLocalProperties("maven.username")
@@ -105,7 +99,10 @@ afterEvaluate {
                 name = "local"
                 val releasesRepoUrl = layout.buildDirectory.dir("repos/releases")
                 val snapshotsRepoUrl = layout.buildDirectory.dir("repos/snapshots")
-                url = uri(if (libVersion.endsWith("SNAPSHOT", true)) snapshotsRepoUrl else releasesRepoUrl)
+                url = uri(
+                    if (readLocalProperties("lib.version").endsWith("SNAPSHOT", true)) snapshotsRepoUrl
+                    else releasesRepoUrl
+                )
             }
         }
     }
