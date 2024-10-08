@@ -1,5 +1,7 @@
 package top.yumik.libs.solbeanpermission.permission.special.v30
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
@@ -23,7 +25,24 @@ internal class ManageExternalStorageCompat : ISpecialPermissionCompat {
             return Environment.isExternalStorageManager()
         }
 
+        if (AndroidVersion.getAndroidVersionCode() == AndroidVersion.ANDROID_10 && !checkIsExternalStorageLegacy()) {
+            return false
+        }
+
         return super.isGranted(context)
+    }
+
+    override fun isNeverAsk(activity: Activity): Boolean {
+        if (AndroidVersion.getAndroidVersionCode() == AndroidVersion.ANDROID_10 && !checkIsExternalStorageLegacy()) {
+            return true
+        }
+
+        return super.isNeverAsk(activity)
+    }
+
+    @SuppressLint("NewApi")
+    private fun checkIsExternalStorageLegacy(): Boolean {
+        return Environment.isExternalStorageLegacy()
     }
 
     override fun getIntent(context: Context): Intent {
@@ -73,20 +92,8 @@ internal class ManageExternalStorageCompat : ISpecialPermissionCompat {
     }
 
     override fun config(context: Context): PermissionConfig {
-        // 如果应用的 TargetSDK 小于或等于 Android 9 则降级
-        if (AndroidVersion.getTargetSdkVersionCode(context) < AndroidVersion.ANDROID_10) {
-            return PermissionConfig.Replace(
-                permissions = setOf(
-                    Permission.READ_EXTERNAL_STORAGE,
-                    Permission.WRITE_EXTERNAL_STORAGE
-                )
-            )
-        }
-
-        // 如果应用的 TargetSDK 小于或等于 Android 10，且配置了`requestLegacyExternalStorage`则降级
-        if (AndroidVersion.getTargetSdkVersionCode(context) == AndroidVersion.ANDROID_10 &&
-            PermissionChecker.checkManifestRequestLegacyExternalStorage(context)
-        ) {
+        // 如果应用的 TargetSDK 小于或等于 Android 10 则降级
+        if (AndroidVersion.getTargetSdkVersionCode(context) <= AndroidVersion.ANDROID_10) {
             return PermissionConfig.Replace(
                 permissions = setOf(
                     Permission.READ_EXTERNAL_STORAGE,

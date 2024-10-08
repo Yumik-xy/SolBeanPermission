@@ -10,7 +10,7 @@ plugins {
 val libGroup = "com.iflytek.ebg.xkt.lib.solbeanpermission"
 val libDescription = "标准课堂学生学习项目，权限授予SDK"
 val libArtifactId = "SolBeanPermission"
-val libVersion = "1.0.3-SNAPSHOT"
+val libVersion = "1.0.4-SNAPSHOT"
 
 val developerId = "xyhuang23"
 val developerName = "黄星宇"
